@@ -1,0 +1,852 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    font-family: 'Russo One', sans-serif;
+    overflow-x: hidden;
+}
+
+html {
+    scroll-behavior: smooth;
+    /* Prevent the rubber-band overscroll at the top from revealing the
+       sharp fixed background above the calm first screen. The dark-blue
+       backdrop is a fallback for any browser that still overscrolls. */
+    overscroll-behavior-y: none;
+    background-color: #0c1c26;
+}
+
+.main-container {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Base background image */
+.background-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffccff; /* Fallback to pink */
+    background-image: url('images/futurist-texture-wallpaper.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+}
+
+
+
+.content {
+    position: relative;
+    z-index: 5;
+    display: block; /* Changed from flex to block to ensure sticky children behave correctly */
+    width: 100%;
+    text-align: center;
+    color: #fff;
+}
+
+/* First screen: header images + date, always exactly one viewport tall */
+.title-section {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0;
+    width: 100%; /* Explicit width for block context */
+    position: relative;
+    z-index: 10;
+}
+
+/* Calmer FIRST screen: blur/darken/desaturate the SAME shared background
+   in place (via backdrop-filter, so it's the same picture — not a second
+   copy), then fade the effect out toward the bottom so it dissolves into
+   the untouched TV-section background with no visible seam. */
+.title-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgba(125, 183, 212, 0.18); /* #7db7d4 cool wash */
+    -webkit-backdrop-filter: blur(6px) brightness(0.66) saturate(0.72);
+    backdrop-filter: blur(6px) brightness(0.66) saturate(0.72);
+    /* Fade the whole calm treatment out over the lower part of the screen */
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 96%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 96%);
+    pointer-events: none;
+}
+
+/* Soft dark vignette behind the main title so the pink text pops.
+   Also fades to transparent well before the bottom edge, keeping the
+   transition into the next section smooth. */
+.title-section::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(ellipse 62% 50% at 50% 45%,
+        rgba(30, 66, 90, 0.60) 0%,
+        rgba(30, 66, 90, 0.30) 45%,
+        rgba(30, 66, 90, 0) 72%);
+    pointer-events: none;
+}
+
+.section {
+    margin-bottom: 100px;
+    width: 100%;
+}
+
+.header-container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+/* --- Header image title (header + subheader combined) --- */
+.header-image {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: 85svh;
+    max-height: 85svh;
+    object-fit: contain;
+    object-position: center;
+    margin: 0 auto;
+    /* Gentle floating life */
+    animation: title-float 6s ease-in-out infinite;
+}
+
+@keyframes title-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-12px) rotate(-0.6deg); }
+}
+
+/* Twinkling ✦ sparkles around the title */
+.sparkles {
+    position: absolute;
+    inset: 0;
+    z-index: 11;
+    pointer-events: none;
+}
+
+.sparkle {
+    position: absolute;
+    font-family: var(--crt-font);
+    color: #fff;
+    opacity: 0;
+    text-shadow: 0 0 8px rgba(255, 92, 168, 0.85);
+    animation: twinkle 3.2s ease-in-out infinite;
+}
+
+/* green-glow variant reused by several sparkles */
+.sparkle.s2, .sparkle.s5, .sparkle.s7, .sparkle.s8, .sparkle.s10 {
+    color: var(--crt-green);
+    text-shadow: 0 0 10px rgba(102, 255, 102, 0.85);
+}
+.sparkle.s1, .sparkle.s4, .sparkle.s6, .sparkle.s9, .sparkle.s11 {
+    color: var(--crt-pink);
+}
+
+.sparkle.s1  { top: 20%; left: 15%;  font-size: clamp(26px, 4vw, 56px);   animation-delay: 0s;   }
+.sparkle.s2  { top: 28%; right: 17%; font-size: clamp(14px, 1.8vw, 22px); animation-delay: 0.7s; }
+.sparkle.s3  { top: 58%; left: 22%;  font-size: clamp(12px, 1.6vw, 20px); animation-delay: 1.4s; }
+.sparkle.s4  { top: 64%; right: 20%; font-size: clamp(24px, 3.6vw, 50px); animation-delay: 2.1s; }
+.sparkle.s5  { top: 40%; left: 50%;  font-size: clamp(12px, 1.5vw, 18px); animation-delay: 2.7s; }
+.sparkle.s6  { top: 13%; right: 33%; font-size: clamp(28px, 4.4vw, 60px); animation-delay: 1.1s; }
+.sparkle.s7  { top: 76%; left: 40%;  font-size: clamp(14px, 1.9vw, 24px); animation-delay: 3.1s; }
+.sparkle.s8  { top: 50%; right: 8%;  font-size: clamp(24px, 3.8vw, 52px); animation-delay: 0.4s; }
+.sparkle.s9  { top: 16%; left: 38%;  font-size: clamp(11px, 1.4vw, 16px); animation-delay: 1.9s; }
+.sparkle.s10 { top: 84%; right: 30%; font-size: clamp(16px, 2.2vw, 30px); animation-delay: 2.4s; }
+.sparkle.s11 { top: 34%; left: 8%;   font-size: clamp(22px, 3.4vw, 46px); animation-delay: 3.6s; }
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+    50%      { opacity: 1; transform: scale(1) rotate(25deg); }
+}
+
+/* Magazine-cover style pull-quotes, scattered in the corners */
+.cover-quote {
+    position: absolute;
+    max-width: min(46%, 360px);
+    margin: 0;
+    z-index: 11;
+    pointer-events: none;
+}
+
+/* Upper-right, tilted slightly clockwise */
+.cover-quote--right {
+    top: clamp(66px, 15vh, 160px);
+    right: clamp(12px, 3vw, 54px);
+    text-align: right;
+    transform: rotate(2deg);
+}
+
+/* Lower-left, tilted the other way — deliberately not mirrored */
+.cover-quote--left {
+    top: clamp(100px, 34vh, 360px);
+    left: clamp(12px, 3vw, 54px);
+    text-align: left;
+    transform: rotate(-3deg);
+}
+
+.cover-quote blockquote {
+    margin: 0;
+    font-family: var(--body-font);
+    font-style: italic;
+    font-weight: 900;
+    font-size: clamp(0.95rem, 1.8vw, 1.45rem);
+    line-height: 1.25;
+    color: #fff;
+    text-wrap: balance; /* even line lengths, avoids lone trailing words */
+    text-shadow: 0 0 6px rgba(0, 0, 0, 0.55), 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.cover-quote figcaption {
+    margin-top: 8px;
+    font-family: var(--crt-font);
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: clamp(0.85rem, 1.5vw, 1.25rem);
+    color: var(--crt-pink);
+    text-shadow: 0 0 8px rgba(255, 92, 168, 0.7);
+}
+
+/* Bouncing "scroll down" cue */
+.scroll-cue {
+    position: absolute;
+    bottom: clamp(16px, 4vh, 42px);
+    left: 50%;
+    font-family: var(--crt-font);
+    font-size: clamp(22px, 3vw, 38px);
+    color: var(--crt-green);
+    text-shadow:
+        0 0 8px rgba(102, 255, 102, 0.9),
+        0 0 18px rgba(102, 255, 102, 0.5);
+    z-index: 11;
+    pointer-events: none;
+    animation: scroll-bounce 1.7s ease-in-out infinite;
+}
+
+@keyframes scroll-bounce {
+    0%, 100% { transform: translate(-50%, 0);    opacity: 0.5; }
+    50%      { transform: translate(-50%, 10px); opacity: 1; }
+}
+
+.accent-line-inline {
+    color: #ff5ca8;
+}
+
+.tv-text-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Second screen: TV Frame Scroll Section */
+.tv-scroll-section {
+    position: relative;
+    width: 100%;
+    min-height: 400vh; /* Control scroll duration here */
+    margin-bottom: 0; /* end the page exactly when the last slide is pinned */
+    z-index: 20;
+}
+
+.tv-sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Stick to bottom */
+    align-items: center;
+    z-index: 100; 
+    overflow: hidden; /* Prevent vertical overflow of children if any */
+}
+
+:root {
+    --tv-aspect-ratio: 1180 / 800;
+    --pixel-font: 'Silkscreen', cursive;
+    --display-font: 'Russo One', sans-serif;
+    --body-font: 'Montserrat', sans-serif;
+    /* Old-TV / CRT text theme. Handjet is an LED-matrix pixel font that
+       (unlike Silkscreen/VT323) actually ships Cyrillic glyphs. */
+    --crt-font: 'Handjet', 'Silkscreen', monospace;
+    --crt-green: #66ff66;
+    --crt-pink: #ff5ca8;
+}
+
+.tv {
+    position: relative;
+    width: 100vw;
+    max-width: 1600px;
+    aspect-ratio: 1180 / 800; /* Preserve proportions */
+    max-height: 100vh; /* Fit to screen height */
+    margin-inline: auto;
+    z-index: 1;
+}
+
+.tv__frame-image {
+    position: absolute; /* Changed to absolute to fit container exactly */
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill; /* Use fill because container has same aspect ratio */
+    z-index: 3;
+    pointer-events: none;
+    user-select: none;
+    
+    /* Appearance Animation */
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), 
+                transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tv__masked-screen {
+    container-type: size;
+    container-name: tv-screen;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    -webkit-mask-image: url("images/tv_screen.png");
+    mask-image: url("images/tv_screen.png");
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+
+    /* Appearance Animation */
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), 
+                transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tv__crt-background {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    /* Mid-grey base so the noise reads as bright TV "snow", plus scanlines
+       and a vignette to keep the edges CRT-dark. */
+    background:
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%),
+        radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.65) 100%),
+        #3a3a3a;
+    background-size: 100% 3px, 100% 100%, 100% 100%;
+}
+
+.tv__crt-background::before {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: url("images/static_noise.png");
+    background-size: 260px 260px;
+    /* Strong, fast-flickering static snow */
+    opacity: 0.55;
+    animation: static-noise 0.12s steps(6) infinite;
+}
+
+.tv__content-safe-area {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    
+    /* Content also needs to scale with TV */
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), 
+                transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tv.visible .tv__masked-screen,
+.tv.visible .tv__frame-image,
+.tv.visible .tv__content-safe-area {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Internal UI */
+.tv-content {
+  position: absolute;
+  inset: 16% 18% 18% 18%;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  text-align: center;
+  z-index: 2;
+}
+
+.tv-channel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: var(--crt-font);
+    font-weight: 700;
+    font-size: clamp(18px, 3cqh, 34px);
+    letter-spacing: 2px;
+    color: var(--crt-green);
+    /* Green phosphor bloom */
+    text-shadow:
+        0 0 4px rgba(102, 255, 102, 0.9),
+        0 0 12px rgba(102, 255, 102, 0.5),
+        2px 2px 0px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.tv-title {
+    margin: 0 0 clamp(12px, 3.5cqh, 34px);
+    /* Bigger, with a vw guard so it never overflows narrow screens */
+    font-size: clamp(42px, min(11cqh, 11vw), 110px);
+    color: var(--crt-pink);
+    font-family: var(--crt-font);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    line-height: 1;
+    /* CRT chromatic aberration (RGB split) + pink phosphor bloom */
+    text-shadow:
+        2px 0 0 rgba(0, 200, 255, 0.5),
+        -2px 0 0 rgba(255, 40, 80, 0.5),
+        0 0 12px rgba(255, 92, 168, 0.85),
+        0 0 26px rgba(255, 92, 168, 0.45);
+}
+
+.where-page {
+  width: 100%;
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.where-page h1 {
+  display: none; /* Replaced by .tv-title */
+}
+
+.where-card {
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Two-tier text system: pink = headings + accents, off-white = body.
+   Only two sizes, kept close together, for a calm/consistent screen. */
+.where-card h2 {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 3.4vw, 50px);
+  font-family: var(--crt-font);
+  font-weight: 700;
+  letter-spacing: 2px;
+  line-height: 1.1;
+  color: #fff;
+  text-shadow:
+      0 0 6px rgba(255, 255, 255, 0.6),
+      0 0 16px rgba(255, 255, 255, 0.3);
+}
+
+.where-card p {
+  margin: 8px 0;
+  font-size: clamp(22px, 2.5vw, 36px);
+  line-height: 1.35;
+  font-family: var(--crt-font);
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: #ededed;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+}
+
+/* Inline / block accent — wins over `.where-card p` via higher specificity */
+.where-card .pink {
+    color: var(--crt-pink);
+    text-shadow:
+        0 0 6px rgba(255, 92, 168, 0.9),
+        0 0 14px rgba(255, 92, 168, 0.5);
+}
+
+/* Emojis: no text glow (looks muddy on colour glyphs); soft pink halo instead */
+.where-card .ic {
+    font-style: normal;
+    text-shadow: none;
+    filter: drop-shadow(0 0 5px rgba(255, 92, 168, 0.55));
+}
+
+/* Heading-sized emphasis (matches .where-card h2) */
+.where-card .big {
+    font-size: clamp(28px, 3.4vw, 50px);
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+/* Original slide logic adapted */
+.tv-slide {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    /* Anchor to the top so every header lands in the exact same, higher
+       spot regardless of how much content the slide has below it. */
+    justify-content: flex-start;
+    padding-top: clamp(22px, 5cqh, 50px);
+    box-sizing: border-box;
+}
+
+.tv-slide.active {
+    display: flex;
+    animation: slide-fade-in 0.3s ease-out;
+}
+
+@keyframes slide-fade-in {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Jitters the static-noise texture around so it looks like live TV snow */
+@keyframes static-noise {
+    0%   { transform: translate(0, 0); }
+    10%  { transform: translate(-6%, -8%); }
+    20%  { transform: translate(9%, 4%); }
+    30%  { transform: translate(-4%, 10%); }
+    40%  { transform: translate(7%, -6%); }
+    50%  { transform: translate(-9%, 5%); }
+    60%  { transform: translate(5%, 9%); }
+    70%  { transform: translate(-7%, -4%); }
+    80%  { transform: translate(8%, 7%); }
+    90%  { transform: translate(-5%, -9%); }
+    100% { transform: translate(0, 0); }
+}
+
+/* Occasional CRT phosphor flicker on the screen text */
+@keyframes crt-text-flicker {
+    0%, 96%, 100% { opacity: 1; }
+    97% { opacity: 0.82; }
+    98% { opacity: 1; }
+    99% { opacity: 0.88; }
+}
+
+.tv-content {
+    animation: crt-text-flicker 6s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tv-static-overlay, .tv-scanlines, .blink-rec, .tv-page-title, .tv__content::after, .tv-content, .tv__crt-background::before,
+    .header-image, .sparkle, .scroll-cue {
+        animation: none !important;
+    }
+}
+
+/* RSVP is now a plain bracketed text link, e.g. [ ЗАПОЛНИТЬ ФОРМУ ] */
+.rsvp-button {
+  display: inline-block;
+
+  color: var(--crt-pink);
+  background: none;
+  border: none;
+
+  font-size: clamp(24px, 4vh, 44px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-decoration: none;
+  text-align: center;
+  font-family: var(--crt-font);
+
+  text-shadow:
+    0 0 8px rgba(255, 92, 168, 0.9),
+    0 0 18px rgba(255, 92, 168, 0.5);
+
+  transition: text-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.rsvp-button::before {
+  content: "[ ";
+}
+
+.rsvp-button::after {
+  content: " ]";
+}
+
+.rsvp-button:hover {
+  filter: brightness(1.25);
+  text-shadow:
+    0 0 10px rgba(255, 92, 168, 1),
+    0 0 24px rgba(255, 92, 168, 0.7);
+}
+.page-decor {
+    position: fixed;
+    width: clamp(200px, 25vw, 400px);
+    height: auto;
+    z-index: 1000; /* High, but below menu */
+    pointer-events: none;
+    
+    opacity: 0;
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                opacity 0.4s ease-in-out;
+}
+
+.page-decor-left-bottom {
+    bottom: 0;
+    left: 0;
+    transform: translate(-20%, 20%); /* Slight overlap with corner */
+}
+
+.page-decor-right-bottom {
+    bottom: 0;
+    right: 0;
+    transform: translate(20%, 20%); /* Slight overlap with corner */
+}
+
+/* Entrance state: on-screen and visible */
+.page-decor.visible {
+    opacity: 1;
+    transform: translate(0, 0);
+}
+
+/* Specific transitions for the visible state if needed, 
+   but the general one above should handle both directions. */
+
+/* Removed old animations in favor of transitions */
+
+/* Navigation — fixed to the top and visible across the whole page */
+.tv-menu {
+    position: fixed;
+    top: 16px;
+    bottom: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    z-index: 99999; /* Higher than everything else */
+    width: 95%;
+    max-width: 1000px;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s;
+}
+
+.tv-menu.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* TV channel-selector buttons — glowing green pills, like lit remote buttons */
+.tv-menu-btn {
+    background:
+        linear-gradient(rgba(102, 255, 102, 0.10), rgba(0, 0, 0, 0.15)),
+        rgba(0, 0, 0, 0.6);
+    color: var(--crt-green);
+    border: 2px solid rgba(102, 255, 102, 0.55);
+    border-radius: 999px;
+    padding: 10px 26px;
+    font-family: var(--crt-font);
+    font-weight: 700;
+    font-size: clamp(1rem, 2.2vw, 1.6rem);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow:
+        0 0 4px rgba(102, 255, 102, 0.9),
+        0 0 12px rgba(102, 255, 102, 0.5);
+    box-shadow:
+        0 0 10px rgba(102, 255, 102, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.tv-menu-btn:hover {
+    background:
+        linear-gradient(rgba(102, 255, 102, 0.22), rgba(0, 0, 0, 0.15)),
+        rgba(0, 0, 0, 0.6);
+    border-color: var(--crt-green);
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 18px rgba(102, 255, 102, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.tv-menu-btn.active {
+    background:
+        radial-gradient(ellipse at 50% 30%, #b6ffb6 0%, var(--crt-green) 55%, #33cc44 100%);
+    color: #0a3311;
+    border-color: #d6ffd6;
+    text-shadow: none;
+    box-shadow:
+        0 0 22px rgba(102, 255, 102, 0.9),
+        inset 0 1px 2px rgba(255, 255, 255, 0.6);
+}
+
+
+
+/* Clean up old no-signal styles if not used anymore, 
+   but keeping basic ones for compatibility or other parts if needed */
+.no-signal {
+    font-family: 'Silkscreen', cursive;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+/* Duplicate rules removed or merged above */
+
+.tv.visible .tv__frame-image {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.tv.visible .tv__masked-screen {
+    opacity: 1;
+    transform: scale(1);
+}
+
+
+@media (max-width: 800px) {
+    .info-section {
+        grid-template-columns: 1fr;
+    }
+    .info-item {
+        padding: 10px;
+    }
+    .info-section {
+        gap: 20px;
+    }
+}
+
+/* ============================================================
+   MOBILE / PORTRAIT (<=768px) — dedicated mobile version.
+   The desktop landscape-TV frame doesn't fit a portrait phone, so on
+   mobile we drop the frame PNG + landscape mask entirely and render the
+   content inside a tall, full-width CRT panel (rounded bordered screen,
+   keeping the scanlines / static / glow). Nothing is cropped, and there
+   is room for the text. Everything above (desktop) is untouched.
+   ============================================================ */
+@media (max-width: 768px) {
+    /* Center the CRT panel vertically, leaving room for the fixed menu */
+    .tv-sticky {
+        justify-content: center;
+        align-items: center;
+        padding-bottom: 96px;
+        box-sizing: border-box;
+    }
+
+    /* Portrait CRT screen instead of a landscape TV */
+    .tv {
+        width: 92vw;
+        height: 70vh;
+        max-width: none;
+        max-height: none;
+        aspect-ratio: auto;
+        margin-inline: auto;
+        transform: none;
+    }
+
+    /* Hide the landscape TV frame image on mobile */
+    .tv__frame-image {
+        display: none;
+    }
+
+    /* The screen is now a bordered rounded panel, not a PNG-masked shape */
+    .tv__masked-screen {
+        -webkit-mask-image: none;
+        mask-image: none;
+        border: 3px solid rgba(102, 255, 102, 0.35);
+        border-radius: 18px;
+        box-shadow:
+            0 0 26px rgba(0, 0, 0, 0.65),
+            inset 0 0 44px rgba(0, 0, 0, 0.75);
+    }
+
+    .tv__crt-background {
+        border-radius: 16px;
+    }
+
+    /* No more big % insets — the content just uses simple padding */
+    .tv-content {
+        inset: 0;
+        padding: 20px 18px;
+    }
+
+    .tv-slide {
+        padding-top: 6px;
+    }
+
+    .tv-channel {
+        font-size: clamp(15px, 4vw, 24px);
+    }
+
+    .tv-title {
+        font-size: clamp(34px, 10vw, 66px);
+        margin: 0 0 18px;
+    }
+
+    .where-card {
+        padding: 0 6px;
+    }
+
+    .where-card h2 {
+        font-size: clamp(24px, 7vw, 40px);
+        margin: 0 0 8px;
+    }
+
+    .where-card p {
+        font-size: clamp(19px, 5.5vw, 30px);
+        line-height: 1.3;
+        margin: 6px 0;
+    }
+
+    .where-card .big {
+        font-size: clamp(24px, 7vw, 40px);
+    }
+
+    .rsvp-button {
+        font-size: clamp(20px, 6vw, 32px);
+    }
+
+    /* Channel buttons wrap onto multiple rows and sit at the top */
+    .tv-menu {
+        top: 10px;
+        bottom: auto;
+        gap: 8px;
+        flex-wrap: wrap;
+        width: 96%;
+    }
+
+    .tv-menu-btn {
+        padding: 7px 16px;
+        font-size: clamp(0.85rem, 3.8vw, 1.1rem);
+        letter-spacing: 1px;
+    }
+
+    /* Corner stickers smaller so they don't cover the screen */
+    .page-decor {
+        width: clamp(90px, 32vw, 170px);
+    }
+}

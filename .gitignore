@@ -1,0 +1,16 @@
+# OS
+.DS_Store
+
+# Python virtual env / caches
+.venv/
+__pycache__/
+*.pyc
+
+# IDE
+.idea/
+
+# Local reference material (not part of the published site)
+inspo_pics/
+
+# Local tooling
+.cadence/

@@ -759,19 +759,21 @@ html {
         min-height: 400dvh;
     }
 
-    /* Center the CRT panel vertically, leaving room for the fixed menu */
+    /* Anchor the CRT panel just below the menu (not centered) so there's
+       no big empty gap, and make the screen bigger. */
     .tv-sticky {
         height: 100dvh;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
-        padding-bottom: 96px;
+        padding-top: 68px;
+        padding-bottom: 12px;
         box-sizing: border-box;
     }
 
     /* Portrait CRT screen instead of a landscape TV */
     .tv {
         width: 92vw;
-        height: 70vh;
+        height: 74dvh;
         max-width: none;
         max-height: none;
         aspect-ratio: auto;
@@ -841,19 +843,81 @@ html {
         font-size: clamp(20px, 6vw, 32px);
     }
 
-    /* Channel buttons wrap onto multiple rows and sit at the top */
+    /* Plain glowing-text channel labels — no pills, no bar. Wraps to a
+       second line only if a phone is too narrow for one row. */
     .tv-menu {
-        top: 10px;
+        top: 12px;
         bottom: auto;
-        gap: 8px;
+        gap: clamp(10px, 3.5vw, 20px);
         flex-wrap: wrap;
-        width: 96%;
+        justify-content: center;
+        width: 100%;
+        max-width: 100vw;
+        padding: 0 8px;
+        background: none;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
     }
 
     .tv-menu-btn {
-        padding: 7px 16px;
-        font-size: clamp(0.85rem, 3.8vw, 1.1rem);
-        letter-spacing: 1px;
+        flex: 0 0 auto;
+        white-space: nowrap;
+        background: none;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 4px 2px;
+        font-size: clamp(1.1rem, 5vw, 1.5rem);
+        letter-spacing: 0.5px;
+        /* readable over the bright header: green glow + dark backing */
+        text-shadow:
+            0 0 8px rgba(102, 255, 102, 0.9),
+            0 0 16px rgba(102, 255, 102, 0.5),
+            0 1px 3px rgba(0, 0, 0, 0.9);
+        -webkit-tap-highlight-color: transparent; /* no grey tap box */
+        -webkit-appearance: none;
+        appearance: none;
+        outline: none;
+    }
+
+    /* Kill the sticky desktop hover/focus/active box on touch (the dark
+       rectangle that lingered after a tap). */
+    .tv-menu-btn:hover,
+    .tv-menu-btn:focus,
+    .tv-menu-btn:active {
+        background: none;
+        border: none;
+        box-shadow: none;
+        transform: none;
+    }
+
+    /* Active channel = brighter glow + underline (no pill fill) */
+    .tv-menu-btn.active {
+        background: none;
+        box-shadow: none;
+        color: #eaffea;
+        text-shadow:
+            0 0 10px rgba(102, 255, 102, 1),
+            0 0 20px rgba(102, 255, 102, 0.75),
+            0 1px 3px rgba(0, 0, 0, 0.9);
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+
+    /* Both pull-quotes at the SAME height, one per side (below the menu),
+       instead of the desktop scattered layout that overlapped the header. */
+    .cover-quote {
+        max-width: 42vw;
+    }
+
+    .cover-quote--right {
+        top: clamp(58px, 11vh, 110px);
+        right: clamp(6px, 2vw, 16px);
+    }
+
+    .cover-quote--left {
+        top: clamp(58px, 11vh, 110px);
+        left: clamp(6px, 2vw, 16px);
     }
 
     /* Corner stickers smaller so they don't cover the screen */

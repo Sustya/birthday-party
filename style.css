@@ -749,8 +749,19 @@ html {
    is room for the text. Everything above (desktop) is untouched.
    ============================================================ */
 @media (max-width: 768px) {
+    /* Use dynamic viewport height so mobile address-bar chrome doesn't add
+       a phantom strip of scroll after the last slide. */
+    .title-section {
+        min-height: 100dvh;
+    }
+
+    .tv-scroll-section {
+        min-height: 400dvh;
+    }
+
     /* Center the CRT panel vertically, leaving room for the fixed menu */
     .tv-sticky {
+        height: 100dvh;
         justify-content: center;
         align-items: center;
         padding-bottom: 96px;
